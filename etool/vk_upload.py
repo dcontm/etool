@@ -24,14 +24,16 @@ def delivery_graphics(filenames):
         print(error_msg)
 
     upload = vk_api.VkUpload(vk_session)
-    grafics = [i+".png" for i in filenames]
-    uploaded = upload.photo(grafics,
-                            album_id=ALBUM_ID,
-                            group_id=GROUP_ID)  # 2
+    grafics = [i + ".png" for i in filenames]
+    uploaded = upload.photo(grafics, album_id=ALBUM_ID, group_id=GROUP_ID)  # 2
 
-    uploaded_url = ['photo{}_{}'.format(uploaded[uploaded.index(i)]['owner_id'],
-                                        uploaded[uploaded.index(i)]['id'])
-                    for i in uploaded]  # 4
+    uploaded_url = [
+        "photo{}_{}".format(
+            uploaded[uploaded.index(i)]["owner_id"],
+            uploaded[uploaded.index(i)]["id"],
+        )
+        for i in uploaded
+    ]  # 4
 
     if uploaded_url:
         for i in grafics:

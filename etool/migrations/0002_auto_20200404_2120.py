@@ -6,13 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('etool', '0001_initial'),
+        ("etool", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='paymount',
-            name='category',
-            field=models.CharField(choices=[('FOOD', 'Питание'), ('DRESS', 'Одежда/Обувь'), ('FOR_HOME', 'Для дома'), ('AUTO', 'Авто'), ('TRANSPORT', 'Транспорт'), ('H_SERVICE', 'ЖКХ/Связь'), ('ENTERTAIMENT', 'Развлечения'), ('PRESENT', 'Подарки'), ('SERVICE', 'Услуги'), ('CREDIT', 'Кредиты'), ('ACCUM', 'Накопления'), ('OTHER', 'Другое')], max_length=50, verbose_name='Категория'),
+            model_name="paymount",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("FOOD", "Питание"),
+                    ("DRESS", "Одежда/Обувь"),
+                    ("FOR_HOME", "Для дома"),
+                    ("AUTO", "Авто"),
+                    ("TRANSPORT", "Транспорт"),
+                    ("H_SERVICE", "ЖКХ/Связь"),
+                    ("ENTERTAIMENT", "Развлечения"),
+                    ("PRESENT", "Подарки"),
+                    ("SERVICE", "Услуги"),
+                    ("CREDIT", "Кредиты"),
+                    ("ACCUM", "Накопления"),
+                    ("OTHER", "Другое"),
+                ],
+                max_length=50,
+                verbose_name="Категория",
+            ),
         ),
     ]

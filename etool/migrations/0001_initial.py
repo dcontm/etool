@@ -9,32 +9,114 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('user_id', models.CharField(max_length=100, primary_key=True, serialize=False)),
-                ('first_name', models.CharField(blank=True, max_length=100, null=True)),
-                ('last_name', models.CharField(blank=True, max_length=100, null=True)),
-                ('gender', models.CharField(blank=True, max_length=10, null=True)),
-                ('age', models.IntegerField(blank=True, null=True)),
-                ('city', models.CharField(blank=True, max_length=100, null=True)),
-                ('last_active', models.DateTimeField(blank=True, default=pendulum.now, null=True, verbose_name='Последняя активность')),
-                ('last_payment', models.CharField(blank=True, max_length=100, null=True, verbose_name='Последний платеж')),
-                ('status', models.CharField(blank=True, max_length=100, null=True, verbose_name='status')),
+                (
+                    "user_id",
+                    models.CharField(
+                        max_length=100, primary_key=True, serialize=False
+                    ),
+                ),
+                (
+                    "first_name",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                (
+                    "last_name",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                (
+                    "gender",
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
+                ("age", models.IntegerField(blank=True, null=True)),
+                (
+                    "city",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                (
+                    "last_active",
+                    models.DateTimeField(
+                        blank=True,
+                        default=pendulum.now,
+                        null=True,
+                        verbose_name="Последняя активность",
+                    ),
+                ),
+                (
+                    "last_payment",
+                    models.CharField(
+                        blank=True,
+                        max_length=100,
+                        null=True,
+                        verbose_name="Последний платеж",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        blank=True,
+                        max_length=100,
+                        null=True,
+                        verbose_name="status",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Paymount',
+            name="Paymount",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('datetime', models.DateTimeField(default=pendulum.now, verbose_name='Дата платежа')),
-                ('amount', models.PositiveIntegerField(verbose_name='Сумма платежа')),
-                ('category', models.CharField(choices=[('Питание', 'Питание'), ('Одежда/Обувь', 'Одежда/Обувь'), ('Для дома', 'Для дома'), ('Авто', 'Авто'), ('Транспорт', 'Транспорт'), ('ЖКХ/Связь', 'ЖКХ/Связь'), ('Развлечения', 'Развлечения'), ('Подарки', 'Подарки'), ('Услуги', 'Услуги'), ('Кредиты', 'Кредиты'), ('Накопления', 'Накопления'), ('Другое', 'Другое')], max_length=50, verbose_name='Категория')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='etool.User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "datetime",
+                    models.DateTimeField(
+                        default=pendulum.now, verbose_name="Дата платежа"
+                    ),
+                ),
+                (
+                    "amount",
+                    models.PositiveIntegerField(verbose_name="Сумма платежа"),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("Питание", "Питание"),
+                            ("Одежда/Обувь", "Одежда/Обувь"),
+                            ("Для дома", "Для дома"),
+                            ("Авто", "Авто"),
+                            ("Транспорт", "Транспорт"),
+                            ("ЖКХ/Связь", "ЖКХ/Связь"),
+                            ("Развлечения", "Развлечения"),
+                            ("Подарки", "Подарки"),
+                            ("Услуги", "Услуги"),
+                            ("Кредиты", "Кредиты"),
+                            ("Накопления", "Накопления"),
+                            ("Другое", "Другое"),
+                        ],
+                        max_length=50,
+                        verbose_name="Категория",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="etool.User",
+                    ),
+                ),
             ],
         ),
     ]

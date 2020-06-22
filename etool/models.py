@@ -1,6 +1,7 @@
 from django.db import models
 import pendulum
-from . gf import Round, Wall
+from .gf import Round, Wall
+
 # Create your models here.
 
 
@@ -35,14 +36,15 @@ class Paymount(models.Model):
     ]
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    datetime = models.DateTimeField(default=pendulum.now,
-                                    verbose_name="Дата платежа")
+    datetime = models.DateTimeField(
+        default=pendulum.now, verbose_name="Дата платежа"
+    )
     # Решено отказаться от DecimalField,
     # чтобы избежать заморочек с проверками isdigit() - проверяет int
     amount = models.PositiveIntegerField(verbose_name="Сумма платежа")
-    category = models.CharField(max_length=50,
-                                choices=CATEGORY,
-                                verbose_name="Категория")
+    category = models.CharField(
+        max_length=50, choices=CATEGORY, verbose_name="Категория"
+    )
 
 
 class User(models.Model):
@@ -56,20 +58,20 @@ class User(models.Model):
     age = models.IntegerField(blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
 
-    last_active = models.DateTimeField(default=pendulum.now,
-                                       blank=True,
-                                       null=True,
-                                       verbose_name="Последняя активность")
+    last_active = models.DateTimeField(
+        default=pendulum.now,
+        blank=True,
+        null=True,
+        verbose_name="Последняя активность",
+    )
 
-    last_payment = models.CharField(max_length=100,
-                                    blank=True,
-                                    null=True,
-                                    verbose_name="Последний платеж")
+    last_payment = models.CharField(
+        max_length=100, blank=True, null=True, verbose_name="Последний платеж"
+    )
 
-    status = models.CharField(max_length=100,
-                              blank=True,
-                              null=True,
-                              verbose_name="status")
+    status = models.CharField(
+        max_length=100, blank=True, null=True, verbose_name="status"
+    )
 
     def update_active(self):
         self.last_active = pendulum.now()
@@ -80,7 +82,7 @@ class User(models.Model):
         self.save()
 
     def roll_back(self):
-        query = Paymount.objects.latest('datetime')
+        query = Paymount.objects.latest("datetime")
         query.delete()
 
     def history_callback(self, period):
@@ -90,8 +92,9 @@ class User(models.Model):
 
         # Последние 20 платежей в одном сообщении
         if period == "h_last_20":
-            query = (Paymount.objects.filter(user=self)
-                     .order_by("-datetime")[:20])
+            query = Paymount.objects.filter(user=self).order_by("-datetime")[
+                :20
+            ]
             total_accum = sum([i.amount for i in query])
             if query:
                 limit = query.count()
@@ -100,10 +103,12 @@ class User(models.Model):
 
                 for i in query[:20]:
                     dt = pendulum.instance(i.datetime)
-                    dt = dt.in_tz('Europe/Moscow')
-                    message += "{} {} {} руб.\n".format(dt.strftime("%d.%m %H:%M"),
-                                                        i.get_category_display(),
-                                                        i.amount)
+                    dt = dt.in_tz("Europe/Moscow")
+                    message += "{} {} {} руб.\n".format(
+                        dt.strftime("%d.%m %H:%M"),
+                        i.get_category_display(),
+                        i.amount,
+                    )
             else:
                 message = "У вас ещё нет сохраненных платежей"
 
@@ -117,38 +122,49 @@ class User(models.Model):
             dt = pendulum.now()
             end_week = dt.set(hour=23, minute=59, second=59)
             start_week = end_week.subtract(days=7)
-            query = (Paymount.objects.filter(user=self)
-                     .filter(datetime__range=(start_week.add(hours=3),
-                             end_week.add(hours=3)))
-                     .order_by("-datetime"))
+            query = (
+                Paymount.objects.filter(user=self)
+                .filter(
+                    datetime__range=(
+                        start_week.add(hours=3),
+                        end_week.add(hours=3),
+                    )
+                )
+                .order_by("-datetime")
+            )
 
             total_accum = sum([i.amount for i in query])
-            message = "Расходы  c {} по {}\n".format(start_week.strftime("%d.%m"),
-                                                     end_week.strftime("%d.%m"))
+            message = "Расходы  c {} по {}\n".format(
+                start_week.strftime("%d.%m"), end_week.strftime("%d.%m")
+            )
             message += "Всего за неделю: {} руб.\n".format(total_accum)
 
             if query:
                 if query.count() < 30:
                     for i in query:
                         dt = pendulum.instance(i.datetime)
-                        dt = dt.in_tz('Europe/Moscow')
-                        message += "{} {} {} руб.\n".format(dt.strftime("%d.%m %H:%M"),
-                                                            i.get_category_display(),
-                                                            i.amount)
+                        dt = dt.in_tz("Europe/Moscow")
+                        message += "{} {} {} руб.\n".format(
+                            dt.strftime("%d.%m %H:%M"),
+                            i.get_category_display(),
+                            i.amount,
+                        )
                     messages.append(message)
 
                 else:
                     count = 0
-                    for i in range(len(query)//30+1):
-                        chunk = query[count:count+30]
+                    for i in range(len(query) // 30 + 1):
+                        chunk = query[count : count + 30]
                         count += 30
                         if chunk:
                             for every in chunk:
                                 dt = pendulum.instance(every.datetime)
-                                dt = dt.in_tz('Europe/Moscow')
-                                message += "{} {} {} руб.\n".format(dt.strftime("%d.%m %H:%M"),
-                                                                    every.get_category_display(),
-                                                                    every.amount)
+                                dt = dt.in_tz("Europe/Moscow")
+                                message += "{} {} {} руб.\n".format(
+                                    dt.strftime("%d.%m %H:%M"),
+                                    every.get_category_display(),
+                                    every.amount,
+                                )
                         messages.append(message)
                         message = "продолжение...\n"
 
@@ -164,38 +180,49 @@ class User(models.Model):
             dt = pendulum.now()
             end_month = dt.set(hour=23, minute=59, second=59)
             start_month = end_month.subtract(months=1)
-            query = (Paymount.objects.filter(user=self)
-                     .filter(datetime__range=(start_month.add(hours=3),
-                                              end_month.add(hours=3)))
-                     .order_by("-datetime"))
+            query = (
+                Paymount.objects.filter(user=self)
+                .filter(
+                    datetime__range=(
+                        start_month.add(hours=3),
+                        end_month.add(hours=3),
+                    )
+                )
+                .order_by("-datetime")
+            )
             total_accum = sum([i.amount for i in query])
 
-            message = "Расходы  c {} по {}\n".format(start_month.strftime("%d.%m"),
-                                                     end_month.strftime("%d.%m"))
+            message = "Расходы  c {} по {}\n".format(
+                start_month.strftime("%d.%m"), end_month.strftime("%d.%m")
+            )
             message += "Всего за месяц: {} руб.\n".format(total_accum)
 
             if query:
                 if query.count() < 30:
                     for i in query[:30]:
                         dt = pendulum.instance(i.datetime)
-                        dt = dt.in_tz('Europe/Moscow')
-                        message += "{} {} {} руб.\n".format(dt.strftime("%d.%m %H:%M"),
-                                                            i.get_category_display(),
-                                                            i.amount)
+                        dt = dt.in_tz("Europe/Moscow")
+                        message += "{} {} {} руб.\n".format(
+                            dt.strftime("%d.%m %H:%M"),
+                            i.get_category_display(),
+                            i.amount,
+                        )
                     messages.append(message)
 
                 else:
                     count = 0
-                    for i in range(len(query)//30+1):
-                        chunk = query[count:count+30]
+                    for i in range(len(query) // 30 + 1):
+                        chunk = query[count : count + 30]
                         count += 30
                         if chunk:
                             for every in chunk:
                                 dt = pendulum.instance(every.datetime)
-                                dt = dt.in_tz('Europe/Moscow')
-                                message += "{} {} {} руб.\n".format(dt.strftime("%d.%m %H:%M"),
-                                                                    every.get_category_display(),
-                                                                    every.amount)
+                                dt = dt.in_tz("Europe/Moscow")
+                                message += "{} {} {} руб.\n".format(
+                                    dt.strftime("%d.%m %H:%M"),
+                                    every.get_category_display(),
+                                    every.amount,
+                                )
                         messages.append(message)
                         message = "продолжение...\n"
             else:

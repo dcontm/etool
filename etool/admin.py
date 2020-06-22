@@ -1,15 +1,15 @@
 from django.contrib import admin
-from . models import User, Paymount
+from .models import User, Paymount
 
 # Register your models here.
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['user_id']
+    list_display = ["user_id"]
 
 
 class PaymountAdmin(admin.ModelAdmin):
-    list_display = ['user', 'category', 'amount', 'datetime']
+    list_display = ["user", "category", "amount", "datetime"]
 
 
 admin.site.register(User, UserAdmin)
